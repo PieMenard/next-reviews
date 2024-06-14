@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import Link from 'next/link';
+import NavBar from '@/components/NavBar';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -17,26 +17,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body
+        className={`${inter.className} bg-blue-50 flax flex-col px-4 py-2 min-h-screen`}
+      >
         <header>
-          <nav>
-            <ul>
-              <li>
-                <Link href={'/'}>Home</Link>
-              </li>
-              <li>
-                <Link href={'/reviews'}>Reviews</Link>
-              </li>
-              <li>
-                <Link href={'/about'}>About</Link>
-              </li>
-            </ul>
-          </nav>
+          <NavBar />
         </header>
-        <main>{children}</main>
-        <footer>
+        <main className="grow py-3">{children}</main>
+        <footer className="border-t py-3 text-center text-xs sticky top-[100vh]">
           Game data and images courtesy of{' '}
-          <a href="https://rawg.io" target="_blank">
+          <a
+            className="text-orange-800 hover:underline"
+            href="https://rawg.io"
+            target="_blank"
+          >
             RAWG
           </a>
         </footer>

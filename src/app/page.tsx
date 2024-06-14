@@ -1,7 +1,10 @@
-export default function Home() {
+import Heading from '@/components/Heading';
+
+export default function HomePage() {
   return (
     <div>
-      <h1>Indie Fan</h1>
+      <Heading>Indie Game Fans</Heading>
+      <p>You page for all your niche game reviews!</p>
     </div>
   );
 }
