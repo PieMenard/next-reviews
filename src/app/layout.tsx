@@ -1,9 +1,8 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+
 import './globals.css';
 import NavBar from '@/components/NavBar';
-
-const inter = Inter({ subsets: ['latin'] });
+import { exo_2, orbitron } from './fonts';
 
 export const metadata: Metadata = {
   title: 'Indie Fan Reviews',
@@ -16,10 +15,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${inter.className} bg-blue-50 flax flex-col px-4 py-2 min-h-screen`}
-      >
+    <html lang="en" className={`${exo_2.variable} ${orbitron.variable}`}>
+      <body className="bg-blue-50 flax flex-col px-4 py-2 min-h-screen">
         <header>
           <NavBar />
         </header>
