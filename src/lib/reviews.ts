@@ -10,6 +10,12 @@ type Review = {
   body: string;
 }
 
+//get featured review most recent
+export async function getFeaturedReview(): Promise<Review> {
+  const reviews = await getReviews();
+  return reviews[0];
+}
+
 export async function getReview(slug: string): Promise<Review> {
   const text = await readFile(`./content/reviews/${slug}.md`, 'utf8');
   const {
@@ -27,6 +33,8 @@ export async function getReviews() {
     const review = await getReview(slug)
     reviews.push(review)
   }
+  //sort by most recent
+  reviews.sort((a, b) => b.date.localeCompare(a.date));
   return reviews
 }
 
