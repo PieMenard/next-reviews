@@ -1,9 +1,15 @@
 import Heading from '@/components/Heading';
-import { getReview } from '@/lib/reviews';
+import { getReview, getSlugs } from '@/lib/reviews';
 
 type ReviewPageProps = {
   params: { slug: string };
 };
+
+//returns all possible paths that next.js will render
+export async function generateStatisParams() {
+  const slugs = getSlugs();
+  return (await slugs).map((slug) => ({ slug }));
+}
 
 export default async function ReviewPage({
   params: { slug },
