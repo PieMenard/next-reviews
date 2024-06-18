@@ -6,9 +6,16 @@ type ReviewPageProps = {
 };
 
 //returns all possible paths that next.js will render
-export async function generateStatisParams() {
+export async function generateStaticParams() {
   const slugs = getSlugs();
   return (await slugs).map((slug) => ({ slug }));
+}
+
+export async function generateMetadata({ params: { slug } }: ReviewPageProps) {
+  const review = await getReview(slug);
+  return {
+    title: review.title,
+  };
 }
 
 export default async function ReviewPage({
