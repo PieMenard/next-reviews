@@ -1,4 +1,5 @@
 import Heading from '@/components/Heading';
+import Image from 'next/image';
 import Link from 'next/link';
 
 export default function HomePage() {
@@ -11,7 +12,7 @@ export default function HomePage() {
           href={'/reviews/stardew-valley'}
           className="flex flex-col sm:flex-row"
         >
-          <img
+          <Image
             src="/images/stardew-valley.jpg"
             alt=""
             width="320"

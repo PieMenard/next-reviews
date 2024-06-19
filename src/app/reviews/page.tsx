@@ -1,5 +1,6 @@
 import Heading from '@/components/Heading';
 import { getReviews } from '@/lib/reviews';
+import Image from 'next/image';
 import Link from 'next/link';
 
 export const metadata = {
@@ -18,7 +19,7 @@ export default async function ReviewsPage() {
             className="bg-white/70 border rounded shadow w-80 hover:shadow-xl"
           >
             <Link href={`/reviews/${review.slug}`}>
-              <img
+              <Image
                 src={review.image}
                 alt=""
                 width="320"
