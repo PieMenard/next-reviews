@@ -1,5 +1,3 @@
-import { readdir, readFile } from 'fs/promises';
-import matter from 'gray-matter';
 import { marked } from 'marked';
 import qs from 'qs';
 
@@ -54,10 +52,13 @@ export async function getReviews(): Promise<Review[]> {
   return data.map(toReview)
 }
 
-export async function getSlugs() {
-  const files = await readdir('./content/reviews')
-  const slugs = files.filter((file) => file.endsWith('md')).map((file) => file.slice(0, -'.md'.length))
-  return slugs;
+export async function getSlugs(): Promise<string[]> {
+  const { data } = await fetchReviews({
+    fields: ['slug'],
+    sort: ['publishedAt:desc'],
+    pagination: { pageSize: 100 },
+  })
+  return data.map((item: CmsItem) => item.attributes.slug)
 }
 
 export async function fetchReviews(parameters: any) {

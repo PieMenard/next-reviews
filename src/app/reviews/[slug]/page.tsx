@@ -2,15 +2,19 @@ import Heading from '@/components/Heading';
 import ShareLinkButton from '@/components/ShareLinkButton';
 import { getReview, getSlugs } from '@/lib/reviews';
 
+type ReviewPageParams = {
+  slug: string;
+};
+
 type ReviewPageProps = {
   params: { slug: string };
 };
 
 //returns all possible paths that next.js will render
-// export async function generateStaticParams() {
-//   const slugs = getSlugs();
-//   return (await slugs).map((slug) => ({ slug }));
-// }
+export async function generateStaticParams(): Promise<ReviewPageParams[]> {
+  const slugs = await getSlugs();
+  return slugs.map((slug) => ({ slug }));
+}
 
 export async function generateMetadata({ params: { slug } }: ReviewPageProps) {
   const review = await getReview(slug);
