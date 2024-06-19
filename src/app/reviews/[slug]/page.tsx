@@ -38,6 +38,7 @@ export default async function ReviewPage({
       <Image
         src={review.image}
         alt=""
+        priority
         width="640"
         height="360"
         className="mb-2 rounded"
