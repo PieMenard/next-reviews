@@ -31,6 +31,7 @@ export default async function ReviewPage({
   return (
     <>
       <Heading>{review.title} Review</Heading>
+      <p className="font-semibold pb-3">{review.subtitle}</p>
       <div className="flex gap-3 items-baseline">
         <p className="italic pb-2">{review.date}</p>
         <ShareLinkButton />
