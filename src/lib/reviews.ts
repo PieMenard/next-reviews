@@ -20,13 +20,31 @@ export async function getFeaturedReview(): Promise<Review> {
 }
 
 export async function getReview(slug: string): Promise<Review> {
-  const text = await readFile(`./content/reviews/${slug}.md`, 'utf8');
-  const {
-    content,
-    data: { title, date, image },
-  } = matter(text);
-  const body = marked(content) as string;
-  return { slug, title, date, image, body };
+  // const text = await readFile(`./content/reviews/${slug}.md`, 'utf8');
+  // const {
+  //   content,
+  //   data: { title, date, image },
+  // } = matter(text);
+  // const body = marked(content) as string;
+  // return { slug, title, date, image, body };
+  const url = 'http://localhost:1337/api/reviews/' + '?' + qs.stringify({
+    filters: { slug: { $eq: slug } },
+    fields: ['slug', 'title', 'subtitle', 'publishedAt', 'body'],
+    populate: { image: { fields: ['url'] } },
+    sort: ['publishedAt:desc'],
+    pagination: { pageSize: 1, withCount: false },
+  }, { encodeValuesOnly: true });
+  const response = await fetch(url);
+  const { data } = await response.json();
+  const { attributes } = data[0];
+  return {
+    slug: attributes.slug,
+    title: attributes.title,
+    date: attributes.publishedAt.slice(0, 'yyyy-mm-dd'.length),
+    image: CMS_URL + attributes.image.data.attributes.url,
+    body: marked(attributes.body) as string
+  }
+
 }
 
 export async function getReviews(): Promise<Review[]> {
