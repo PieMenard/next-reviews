@@ -3,8 +3,6 @@ import { getReviews } from '@/lib/reviews';
 import Image from 'next/image';
 import Link from 'next/link';
 
-export const revalidate = 30;
-
 export const metadata = {
   title: 'Reviews',
 };
