@@ -3,7 +3,7 @@ import { getReviews } from '@/lib/reviews';
 import Image from 'next/image';
 import Link from 'next/link';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 30;
 
 export default async function HomePage() {
   const reviews = await getReviews(3);

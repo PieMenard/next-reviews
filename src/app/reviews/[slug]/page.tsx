@@ -4,8 +4,6 @@ import { getReview, getSlugs } from '@/lib/reviews';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
-export const dynamic = 'force-dynamic';
-
 type ReviewPageParams = {
   slug: string;
 };
@@ -15,10 +13,10 @@ type ReviewPageProps = {
 };
 
 //returns all possible paths that next.js will render
-// export async function generateStaticParams(): Promise<ReviewPageParams[]> {
-//   const slugs = await getSlugs();
-//   return slugs.map((slug) => ({ slug }));
-// }
+export async function generateStaticParams(): Promise<ReviewPageParams[]> {
+  const slugs = await getSlugs();
+  return slugs.map((slug) => ({ slug }));
+}
 
 export async function generateMetadata({ params: { slug } }: ReviewPageProps) {
   const review = await getReview(slug);
