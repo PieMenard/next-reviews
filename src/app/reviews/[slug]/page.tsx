@@ -3,6 +3,8 @@ import ShareLinkButton from '@/components/ShareLinkButton';
 import { getReview, getSlugs } from '@/lib/reviews';
 import Image from 'next/image';
 
+export const dynamic = 'force-dynamic';
+
 type ReviewPageParams = {
   slug: string;
 };
