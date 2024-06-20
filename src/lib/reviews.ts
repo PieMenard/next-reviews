@@ -21,7 +21,7 @@ type FullReview = Review & {
   body: string;
 }
 
-export async function getReview(slug: string): Promise<FullReview> {
+export async function getReview(slug: string): Promise<FullReview | null> {
   const { data } = await fetchReviews({
     filters: { slug: { $eq: slug } },
     fields: ['slug', 'title', 'subtitle', 'publishedAt', 'body'],
@@ -29,6 +29,11 @@ export async function getReview(slug: string): Promise<FullReview> {
     sort: ['publishedAt:desc'],
     pagination: { pageSize: 1, withCount: false },
   })
+
+  if (data.length === 0) {
+    return null;
+  }
+
   const item = data[0];
   return {
     ...toReview(item),

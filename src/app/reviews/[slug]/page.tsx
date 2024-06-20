@@ -2,6 +2,7 @@ import Heading from '@/components/Heading';
 import ShareLinkButton from '@/components/ShareLinkButton';
 import { getReview, getSlugs } from '@/lib/reviews';
 import Image from 'next/image';
+import { notFound } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,13 +15,16 @@ type ReviewPageProps = {
 };
 
 //returns all possible paths that next.js will render
-export async function generateStaticParams(): Promise<ReviewPageParams[]> {
-  const slugs = await getSlugs();
-  return slugs.map((slug) => ({ slug }));
-}
+// export async function generateStaticParams(): Promise<ReviewPageParams[]> {
+//   const slugs = await getSlugs();
+//   return slugs.map((slug) => ({ slug }));
+// }
 
 export async function generateMetadata({ params: { slug } }: ReviewPageProps) {
   const review = await getReview(slug);
+  if (!review) {
+    notFound();
+  }
   return {
     title: review.title,
   };
@@ -30,6 +34,9 @@ export default async function ReviewPage({
   params: { slug },
 }: ReviewPageProps) {
   const review = await getReview(slug);
+  if (!review) {
+    notFound();
+  }
   return (
     <>
       <Heading>{review.title} Review</Heading>
