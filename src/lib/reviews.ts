@@ -1,12 +1,14 @@
 import { marked } from 'marked';
 import qs from 'qs';
 
-const CMS_URL = 'http://localhost:1337'
+export const CACHE_TAG_REVIEWS = 'reviews';
+
+const CMS_URL = 'http://localhost:1337';
 
 type CmsItem = {
   id: number;
   attributes: any;
-}
+};
 
 type Review = {
   slug: string;
@@ -15,11 +17,11 @@ type Review = {
   date: string;
   image: string;
   body: string;
-}
+};
 
 type FullReview = Review & {
   body: string;
-}
+};
 
 export async function getReview(slug: string): Promise<FullReview | null> {
   const { data } = await fetchReviews({
@@ -28,7 +30,7 @@ export async function getReview(slug: string): Promise<FullReview | null> {
     populate: { image: { fields: ['url'] } },
     sort: ['publishedAt:desc'],
     pagination: { pageSize: 1, withCount: false },
-  })
+  });
 
   if (data.length === 0) {
     return null;
@@ -37,9 +39,8 @@ export async function getReview(slug: string): Promise<FullReview | null> {
   const item = data[0];
   return {
     ...toReview(item),
-    body: marked(item.attributes.body) as string
-  }
-
+    body: marked(item.attributes.body) as string,
+  };
 }
 
 export async function getReviews(pageSize: number): Promise<Review[]> {
@@ -48,8 +49,8 @@ export async function getReviews(pageSize: number): Promise<Review[]> {
     populate: { image: { fields: ['url'] } },
     sort: ['publishedAt:desc'],
     pagination: { pageSize },
-  })
-  return data.map(toReview)
+  });
+  return data.map(toReview);
 }
 
 export async function getSlugs(): Promise<string[]> {
@@ -57,16 +58,18 @@ export async function getSlugs(): Promise<string[]> {
     fields: ['slug'],
     sort: ['publishedAt:desc'],
     pagination: { pageSize: 100 },
-  })
-  return data.map((item: CmsItem) => item.attributes.slug)
+  });
+  return data.map((item: CmsItem) => item.attributes.slug);
 }
 
 export async function fetchReviews(parameters: any) {
-  const url = `${CMS_URL}/api/reviews?` + qs.stringify(parameters, { encodeValuesOnly: true });
+  const url =
+    `${CMS_URL}/api/reviews?` +
+    qs.stringify(parameters, { encodeValuesOnly: true });
   const response = await fetch(url, {
     next: {
-      revalidate: 30 //seconds
-    }
+      tags: [CACHE_TAG_REVIEWS],
+    },
   });
   if (!response.ok) {
     throw new Error(`CMS returned ${response.status} for ${url}`);
@@ -75,13 +78,12 @@ export async function fetchReviews(parameters: any) {
 }
 
 function toReview(item: CmsItem) {
-  const { attributes } = item
+  const { attributes } = item;
   return {
     slug: attributes.slug,
     title: attributes.title,
     subtitle: attributes.subtitle,
     date: attributes.publishedAt.slice(0, 'yyyy-mm-dd'.length),
     image: CMS_URL + attributes.image.data.attributes.url,
-  }
+  };
 }
-
