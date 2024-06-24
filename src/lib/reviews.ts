@@ -5,12 +5,12 @@ export const CACHE_TAG_REVIEWS = 'reviews';
 
 const CMS_URL = 'http://localhost:1337';
 
-type CmsItem = {
+export type CmsItem = {
   id: number;
   attributes: any;
 };
 
-type Review = {
+export type Review = {
   slug: string;
   title: string;
   subtitle: string;
@@ -19,14 +19,16 @@ type Review = {
   body: string;
 };
 
-type FullReview = Review & {
+export type FullReview = Review & {
   body: string;
 };
 
-type PaginatedReviews = {
+export type PaginatedReviews = {
   pageCount: number;
   reviews: Review[];
 }
+
+export type SearchableReview = Pick<Review, 'slug' | 'title'>;
 
 export async function getReview(slug: string): Promise<FullReview | null> {
   const { data } = await fetchReviews({
@@ -68,6 +70,18 @@ export async function getSlugs(): Promise<string[]> {
     pagination: { pageSize: 100 },
   });
   return data.map((item: CmsItem) => item.attributes.slug);
+}
+
+export async function getSearchableReviews(): Promise<SearchableReview[]> {
+  const { data } = await fetchReviews({
+    fields: ['slug', 'title'],
+    sort: ['publishedAt:desc'],
+    pagination: { pageSize: 100 },
+  });
+  return data.map(({ attributes }) => ({
+    slug: attributes.slug,
+    title: attributes.title,
+  }));
 }
 
 export async function fetchReviews(parameters: any) {

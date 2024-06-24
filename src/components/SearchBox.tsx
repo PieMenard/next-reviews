@@ -1,30 +1,46 @@
 'use client';
 
-import ReviewsPage from '@/app/reviews/page';
 import {
   Combobox,
   ComboboxInput,
   ComboboxOption,
   ComboboxOptions,
 } from '@headlessui/react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import type { SearchableReview } from '@/lib/reviews';
 
-export default function SearchBox() {
-  const reviews = [
-    { slug: 'hades-2018', title: 'Hades' },
-    { slug: 'fall-guys', title: 'Fall Guys: Ultimate Knockout' },
-    { slug: 'black-mesa', title: 'Black Mesa' },
-    { slug: 'disco-elysium', title: 'Disco Elysium' },
-    { slug: 'dead-cells', title: 'Dead Cells' },
-  ];
+type SearchBoxProps = {
+  reviews: SearchableReview[];
+};
+
+export default function SearchBox({ reviews }: SearchBoxProps) {
+  const router = useRouter();
+  const [query, setQuery] = useState('');
+
+  const filteredReviews = reviews
+    .filter((review) =>
+      review.title.toLowerCase().includes(query.toLowerCase())
+    )
+    .slice(0, 5);
+
+  const handleChange = (review: SearchableReview) => {
+    if (review) {
+      router.push(`/reviews/${review.slug}`);
+    }
+  };
+
   return (
     <div className="relative w-48">
-      <Combobox>
+      <Combobox onChange={handleChange}>
         <ComboboxInput
           placeholder="Search..."
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
           className="border px-2 py-1 rounded w-full"
         />
         <ComboboxOptions className="absolute bg-white py-1 w-full">
-          {reviews.map((review) => (
+          {filteredReviews.map((review) => (
             <ComboboxOption value={review} key={review.slug}>
               {({ active }) => (
                 <span
