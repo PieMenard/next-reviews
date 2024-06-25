@@ -9,6 +9,7 @@ import {
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { type SearchableReview } from '@/lib/reviews';
+import { useDebounce } from 'use-debounce';
 
 type SearchBoxProps = {
   reviews: SearchableReview[];
@@ -19,11 +20,12 @@ export default function SearchBox() {
   const [query, setQuery] = useState('');
   const [reviews, setReviews] = useState<SearchableReview[]>([]);
 
+  const [debouncedQuery] = useDebounce(query, 300);
   useEffect(() => {
-    if (query.length > 1) {
+    if (debouncedQuery.length > 1) {
       const controller = new AbortController();
       (async () => {
-        const url = '/api/search?query=' + encodeURIComponent(query);
+        const url = '/api/search?query=' + encodeURIComponent(debouncedQuery);
         const response = await fetch(url, { signal: controller.signal });
         const reviews = await response.json();
         setReviews(reviews);
@@ -32,7 +34,7 @@ export default function SearchBox() {
     } else {
       setReviews([]);
     }
-  }, [query]);
+  }, [debouncedQuery]);
 
   const handleChange = (review: SearchableReview) => {
     if (review) {
