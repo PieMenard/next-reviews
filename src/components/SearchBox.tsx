@@ -25,6 +25,8 @@ export default function SearchBox() {
         const reviews = await searchReviews(query);
         setReviews(reviews);
       })();
+    } else {
+      setReviews([]);
     }
   }, [query]);
 

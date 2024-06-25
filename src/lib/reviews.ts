@@ -79,7 +79,7 @@ export async function searchReviews(
   query: string
 ): Promise<SearchableReview[]> {
   const { data } = await fetchReviews({
-    filter: { title: { $contains: query } },
+    filters: { title: { $contains: query } },
     fields: ['slug', 'title'],
     sort: ['title'],
     pagination: { pageSize: 5 },
