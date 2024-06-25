@@ -26,7 +26,7 @@ export type FullReview = Review & {
 export type PaginatedReviews = {
   pageCount: number;
   reviews: Review[];
-}
+};
 
 export type SearchableReview = Pick<Review, 'slug' | 'title'>;
 
@@ -50,7 +50,10 @@ export async function getReview(slug: string): Promise<FullReview | null> {
   };
 }
 
-export async function getReviews(pageSize: number, page: number): Promise<PaginatedReviews> {
+export async function getReviews(
+  pageSize: number,
+  page: number
+): Promise<PaginatedReviews> {
   const { data, meta } = await fetchReviews({
     fields: ['slug', 'title', 'subtitle', 'publishedAt'],
     populate: { image: { fields: ['url'] } },
@@ -59,8 +62,8 @@ export async function getReviews(pageSize: number, page: number): Promise<Pagina
   });
   return {
     pageCount: meta.pagination.pageCount,
-    reviews: data.map(toReview)
-  }
+    reviews: data.map(toReview),
+  };
 }
 
 export async function getSlugs(): Promise<string[]> {
@@ -72,11 +75,14 @@ export async function getSlugs(): Promise<string[]> {
   return data.map((item: CmsItem) => item.attributes.slug);
 }
 
-export async function getSearchableReviews(): Promise<SearchableReview[]> {
+export async function searchReviews(
+  query: string
+): Promise<SearchableReview[]> {
   const { data } = await fetchReviews({
+    filter: { title: { $contains: query } },
     fields: ['slug', 'title'],
-    sort: ['publishedAt:desc'],
-    pagination: { pageSize: 100 },
+    sort: ['title'],
+    pagination: { pageSize: 5 },
   });
   return data.map(({ attributes }) => ({
     slug: attributes.slug,

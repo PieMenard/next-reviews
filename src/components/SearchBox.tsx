@@ -7,22 +7,26 @@ import {
   ComboboxOptions,
 } from '@headlessui/react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import type { SearchableReview } from '@/lib/reviews';
+import { useEffect, useState } from 'react';
+import { searchReviews, type SearchableReview } from '@/lib/reviews';
 
 type SearchBoxProps = {
   reviews: SearchableReview[];
 };
 
-export default function SearchBox({ reviews }: SearchBoxProps) {
+export default function SearchBox() {
   const router = useRouter();
   const [query, setQuery] = useState('');
+  const [reviews, setReviews] = useState<SearchableReview[]>([]);
 
-  const filteredReviews = reviews
-    .filter((review) =>
-      review.title.toLowerCase().includes(query.toLowerCase())
-    )
-    .slice(0, 5);
+  useEffect(() => {
+    if (query.length > 1) {
+      (async () => {
+        const reviews = await searchReviews(query);
+        setReviews(reviews);
+      })();
+    }
+  }, [query]);
 
   const handleChange = (review: SearchableReview) => {
     if (review) {
@@ -40,7 +44,7 @@ export default function SearchBox({ reviews }: SearchBoxProps) {
           className="border px-2 py-1 rounded w-full"
         />
         <ComboboxOptions className="absolute bg-white py-1 w-full">
-          {filteredReviews.map((review) => (
+          {reviews.map((review) => (
             <ComboboxOption value={review} key={review.slug}>
               {({ active }) => (
                 <span
