@@ -9,3 +9,11 @@ datasource db {
   provider = "sqlite"
   url      = "file:./dev.db" //env("DATABASE_URL")
 }
+
+model Comment {
+  id       String   @id @default(uuid())
+  slug     String //same as Review.slug in strapi
+  user     String
+  message  String
+  postedAt DateTime @default(now())
+}
