@@ -8,7 +8,7 @@ import {
 } from '@headlessui/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { searchReviews, type SearchableReview } from '@/lib/reviews';
+import { type SearchableReview } from '@/lib/reviews';
 
 type SearchBoxProps = {
   reviews: SearchableReview[];
@@ -22,7 +22,10 @@ export default function SearchBox() {
   useEffect(() => {
     if (query.length > 1) {
       (async () => {
-        const reviews = await searchReviews(query);
+        const response = await fetch(
+          '/api/search?query=' + encodeURIComponent(query)
+        );
+        const reviews = await response.json();
         setReviews(reviews);
       })();
     } else {

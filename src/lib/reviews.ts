@@ -1,3 +1,6 @@
+import { CmsItem } from './reviews';
+import 'server-only';
+
 import { marked } from 'marked';
 import qs from 'qs';
 
@@ -76,7 +79,7 @@ export async function getSlugs(): Promise<string[]> {
 }
 
 export async function searchReviews(
-  query: string
+  query: string | null
 ): Promise<SearchableReview[]> {
   const { data } = await fetchReviews({
     filters: { title: { $contains: query } },
