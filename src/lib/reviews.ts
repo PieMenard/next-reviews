@@ -1,4 +1,3 @@
-import { CmsItem } from './reviews';
 import 'server-only';
 
 import { marked } from 'marked';
@@ -6,7 +5,7 @@ import qs from 'qs';
 
 export const CACHE_TAG_REVIEWS = 'reviews';
 
-const CMS_URL = 'http://localhost:1337';
+const CMS_URL = process.env.CMS_URL;
 
 export type CmsItem = {
   id: number;
