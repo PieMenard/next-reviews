@@ -30,8 +30,14 @@ export type PaginatedReviews = {
   reviews: Review[];
 };
 
+
 export type SearchableReview = Pick<Review, 'slug' | 'title'>;
 
+type FetchReviewsResponse = {
+  data: {
+    attributes: SearchableReview;
+  }[];
+}
 export async function getReview(slug: string): Promise<FullReview | null> {
   const { data } = await fetchReviews({
     filters: { slug: { $eq: slug } },
@@ -80,7 +86,7 @@ export async function getSlugs(): Promise<string[]> {
 export async function searchReviews(
   query: string | null
 ): Promise<SearchableReview[]> {
-  const { data } = await fetchReviews({
+  const { data }: FetchReviewsResponse = await fetchReviews({
     filters: { title: { $contains: query } },
     fields: ['slug', 'title'],
     sort: ['title'],
@@ -114,6 +120,6 @@ function toReview(item: CmsItem) {
     title: attributes.title,
     subtitle: attributes.subtitle,
     date: attributes.publishedAt.slice(0, 'yyyy-mm-dd'.length),
-    image: CMS_URL + attributes.image.data.attributes.url,
+    image: new URL(attributes.image.data.attributes.url, CMS_URL).href
   };
 }
