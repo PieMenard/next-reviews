@@ -1,10 +1,26 @@
+import { createComment } from '@/lib/comments';
+import { redirect } from 'next/navigation';
+
 type CommentFormProps = {
   title: string;
+  slug: string;
 };
 
-export default function CommentForm({ title }: CommentFormProps) {
+export default function CommentForm({ title, slug }: CommentFormProps) {
+  async function action(formData: FormData) {
+    'use server';
+    createComment({
+      slug,
+      user: formData.get('user') as string,
+      message: formData.get('message') as string,
+    });
+    redirect(`/reviews/${slug}`);
+  }
   return (
-    <form className="border bg-white flex flex-col gap-2 mt-3 px-3 py-2 rounded">
+    <form
+      action={action}
+      className="border bg-white flex flex-col gap-2 mt-3 px-3 py-2 rounded"
+    >
       <p className="pb-1">
         Leave a comment for <strong>{title}</strong>:
       </p>
@@ -12,7 +28,11 @@ export default function CommentForm({ title }: CommentFormProps) {
         <label htmlFor="userField" className="shrink-0 w-32">
           Your name
         </label>
-        <input id="userField" className="border px-2 py-1 rounded w-48" />
+        <input
+          id="userField"
+          name="user"
+          className="border px-2 py-1 rounded w-48"
+        />
       </div>
       <div className="flex">
         <label htmlFor="messageField" className="shrink-0 w-32">
@@ -20,6 +40,7 @@ export default function CommentForm({ title }: CommentFormProps) {
         </label>
         <textarea
           id="messageField"
+          name="message"
           className="border px-2 py-1 rounded w-full"
         />
       </div>
