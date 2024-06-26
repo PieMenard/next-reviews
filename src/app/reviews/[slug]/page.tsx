@@ -1,11 +1,13 @@
 import CommentForm from '@/components/CommentForm';
 import CommentList from '@/components/CommentList';
+import CommentListSkeleton from '@/components/CommentListSkeleton';
 import Heading from '@/components/Heading';
 import ShareLinkButton from '@/components/ShareLinkButton';
 import { getReview, getSlugs } from '@/lib/reviews';
 import { ChatBubbleBottomCenterTextIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 
 type ReviewPageParams = {
   slug: string;
@@ -64,7 +66,9 @@ export default async function ReviewPage({
           Comments
         </h2>
         <CommentForm slug={slug} title={review.title} />
-        <CommentList slug={slug} />
+        <Suspense fallback={<CommentListSkeleton />}>
+          <CommentList slug={slug} />
+        </Suspense>
       </section>
     </>
   );
