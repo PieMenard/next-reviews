@@ -1,4 +1,7 @@
-import { createCommentAction } from '@/app/reviews/[slug]/actions';
+'use client';
+
+import { ActionError, createCommentAction } from '@/app/reviews/[slug]/actions';
+import { useState } from 'react';
 
 type CommentFormProps = {
   title: string;
@@ -6,9 +9,24 @@ type CommentFormProps = {
 };
 
 export default function CommentForm({ title, slug }: CommentFormProps) {
+  const [error, setError] = useState<ActionError | null>(null);
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setError(null);
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    const result = await createCommentAction(formData);
+    if (result?.isError) {
+      setError(result);
+    } else {
+      form.reset();
+    }
+  };
+
   return (
     <form
-      action={createCommentAction}
+      onSubmit={handleSubmit}
       className="border bg-white flex flex-col gap-2 mt-3 px-3 py-2 rounded"
     >
       <p className="pb-1">
@@ -22,7 +40,6 @@ export default function CommentForm({ title, slug }: CommentFormProps) {
         <input
           id="userField"
           name="user"
-          required
           maxLength={50}
           className="border px-2 py-1 rounded w-48"
         />
@@ -34,11 +51,11 @@ export default function CommentForm({ title, slug }: CommentFormProps) {
         <textarea
           id="messageField"
           name="message"
-          required
           maxLength={500}
           className="border px-2 py-1 rounded w-full"
         />
       </div>
+      {Boolean(error) && <p className="text-red-700">{error?.message}</p>}
       <button
         type="submit"
         className="bg-orange-700 rounded px-2 py-1 self-center text-slate-50 w-32 hover:bg-orange-600"
