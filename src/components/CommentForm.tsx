@@ -1,6 +1,4 @@
-import { createComment } from '@/lib/comments';
-import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
+import { createCommentAction } from '@/app/reviews/[slug]/actions';
 
 type CommentFormProps = {
   title: string;
@@ -8,24 +6,15 @@ type CommentFormProps = {
 };
 
 export default function CommentForm({ title, slug }: CommentFormProps) {
-  async function action(formData: FormData) {
-    'use server';
-    createComment({
-      slug,
-      user: formData.get('user') as string,
-      message: formData.get('message') as string,
-    });
-    revalidatePath(`/reviews/${slug}`);
-    redirect(`/reviews/${slug}`);
-  }
   return (
     <form
-      action={action}
+      action={createCommentAction}
       className="border bg-white flex flex-col gap-2 mt-3 px-3 py-2 rounded"
     >
       <p className="pb-1">
         Leave a comment for <strong>{title}</strong>:
       </p>
+      <input type="hidden" name="slug" value={slug} />
       <div className="flex">
         <label htmlFor="userField" className="shrink-0 w-32">
           Your name
@@ -33,6 +22,8 @@ export default function CommentForm({ title, slug }: CommentFormProps) {
         <input
           id="userField"
           name="user"
+          required
+          maxLength={50}
           className="border px-2 py-1 rounded w-48"
         />
       </div>
@@ -43,6 +34,8 @@ export default function CommentForm({ title, slug }: CommentFormProps) {
         <textarea
           id="messageField"
           name="message"
+          required
+          maxLength={500}
           className="border px-2 py-1 rounded w-full"
         />
       </div>
