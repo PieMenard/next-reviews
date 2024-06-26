@@ -1,4 +1,5 @@
 import { createComment } from '@/lib/comments';
+import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
 type CommentFormProps = {
@@ -14,6 +15,7 @@ export default function CommentForm({ title, slug }: CommentFormProps) {
       user: formData.get('user') as string,
       message: formData.get('message') as string,
     });
+    revalidatePath(`/reviews/${slug}`);
     redirect(`/reviews/${slug}`);
   }
   return (
