@@ -8,6 +8,8 @@ export type ActionError = {
   message: string;
 };
 
+export type ActionFunction = (formData: FormData) => Promise<undefined | ActionError>;
+
 export async function createCommentAction(formData: FormData) {
   const data: CreateCommentProps = {
     slug: formData.get('slug') as string,
