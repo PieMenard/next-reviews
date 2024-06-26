@@ -8,19 +8,28 @@ type CommentFormProps = {
   slug: string;
 };
 
+type CommentFormState = {
+  loading: boolean;
+  error: ActionError | null;
+};
+
 export default function CommentForm({ title, slug }: CommentFormProps) {
-  const [error, setError] = useState<ActionError | null>(null);
+  const [state, setState] = useState<CommentFormState>({
+    loading: false,
+    error: null,
+  });
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setError(null);
+    setState({ loading: true, error: null });
     const form = event.currentTarget;
     const formData = new FormData(form);
     const result = await createCommentAction(formData);
     if (result?.isError) {
-      setError(result);
+      setState({ loading: false, error: result });
     } else {
       form.reset();
+      setState({ loading: false, error: null });
     }
   };
 
@@ -55,10 +64,14 @@ export default function CommentForm({ title, slug }: CommentFormProps) {
           className="border px-2 py-1 rounded w-full"
         />
       </div>
-      {Boolean(error) && <p className="text-red-700">{error?.message}</p>}
+      {Boolean(state.error) && (
+        <p className="text-red-700">{state.error?.message}</p>
+      )}
       <button
         type="submit"
-        className="bg-orange-700 rounded px-2 py-1 self-center text-slate-50 w-32 hover:bg-orange-600"
+        disabled={state.loading}
+        className="bg-orange-700 rounded px-2 py-1 self-center text-slate-50 w-32
+         hover:bg-orange-600 disabled:bg-slate-500 disabled:cursor-not-allowed"
       >
         Submit
       </button>
